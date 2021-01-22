@@ -16,8 +16,8 @@ public class Teacher {
     private String password;
     //private String headPortrait;
     private String level;//0:教师 1： 助教
-    private List<String> experiments;
-    private List<String> classes;
+    private List<ObjectId> experiments;
+    private List<ObjectId> classes;
 
 
 }

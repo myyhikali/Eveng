@@ -17,7 +17,8 @@ import java.util.List;
 @Data
 public class ExperimentManage {
     private ObjectId id;
-    private ObjectId experimentalId;
+    private ObjectId experimentalContentId;
+    private String experimentContentName;
     private List<ObjectId> teacherId;
     private Date setTime;
     private Date beginTime;

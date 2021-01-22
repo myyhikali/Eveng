@@ -1,25 +1,21 @@
 package com.seclab.eveng.service.impl;
 
-import com.seclab.eveng.document.ExperimentContent;
+import com.seclab.eveng.document.ClassRoom;
+import com.seclab.eveng.document.ExperimentManage;
 import com.seclab.eveng.service.ExperimentContentService;
+import com.seclab.eveng.service.ExperimentManageService;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @program: eveng
- * @description: 实验内容 具体方法定义
- * @author: Icey
- * @create: 2020-12-09 11:01
- **/
 @Service
-public class ExperimentContentServiceImpl implements ExperimentContentService {
+public class ExperimentManageServiceImpl implements ExperimentManageService {
     private final MongoTemplate mongoTemplate;
 
     public MongoTemplate getMongoTemplate(){
@@ -29,19 +25,22 @@ public class ExperimentContentServiceImpl implements ExperimentContentService {
         return mongoTemplate;
     }
     @Autowired
-    public ExperimentContentServiceImpl(MongoTemplate mongoTemplate){
+    public ExperimentManageServiceImpl(MongoTemplate mongoTemplate){
         this.mongoTemplate=mongoTemplate;
     }
-    public String getExperimentContentDoc(){
-        String url = "http://localhost:8080/doc/";
+
+    public List<ExperimentManage> getExperimentByeId(List<ObjectId> eid){
+        List<ExperimentManage> list = new ArrayList<>();
         try{
-            return url+"experiment1.doc";
+            for (ObjectId id : eid ){
+                Query query = new Query();
+                query.addCriteria(Criteria.where("id").is(id));
+                list.add(getMongoTemplate().findOne(query, ExperimentManage.class));
+            }
+
         }catch (Exception e){
 
-            return null;
         }
+        return list;
     }
-
-
-
 }

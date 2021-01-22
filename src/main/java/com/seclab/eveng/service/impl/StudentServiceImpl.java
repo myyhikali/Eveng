@@ -1,15 +1,19 @@
 package com.seclab.eveng.service.impl;
 
+import com.seclab.eveng.document.ClassRoom;
 import com.seclab.eveng.document.Student;
 import com.seclab.eveng.document.Teacher;
 import com.seclab.eveng.service.StudentService;
 import net.sf.json.JSONObject;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -96,6 +100,21 @@ public class StudentServiceImpl implements StudentService {
         }
         return result;
 
+    }
+
+    public List<Student> getStusByStuid(List<ObjectId> stuid){
+        List<Student> list = new ArrayList<>();
+        try{
+            for (ObjectId id : stuid ){
+                Query query = new Query();
+                query.addCriteria(Criteria.where("id").is(id));
+                list.add(getMongoTemplate().findOne(query,Student.class));
+            }
+
+        }catch (Exception e){
+
+        }
+        return list;
     }
 
 
