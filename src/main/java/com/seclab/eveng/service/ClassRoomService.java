@@ -8,4 +8,5 @@ import java.util.List;
 public interface ClassRoomService {
     List<ClassRoom> getClassesByClassId(List<ObjectId> classid);
     ClassRoom getClassByClassId(ObjectId classid);
+    ClassRoom addClass(String className,String teacherId);
 }

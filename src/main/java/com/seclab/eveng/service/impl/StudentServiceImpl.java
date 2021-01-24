@@ -116,6 +116,17 @@ public class StudentServiceImpl implements StudentService {
         }
         return list;
     }
+    public List<Student> getAllStu(){
+        List<Student> list = new ArrayList<>();
+        try{
+
+            list = getMongoTemplate().findAll(Student.class);
+
+        }catch (Exception e){
+
+        }
+        return list;
+    }
 
 
 }

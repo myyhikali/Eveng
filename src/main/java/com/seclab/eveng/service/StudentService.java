@@ -13,5 +13,6 @@ public interface StudentService {
     JSONObject login(Map<String,String> data);
     JSONObject register(Student student);
     List<Student> getStusByStuid(List<ObjectId> stuid);
+    List<Student> getAllStu();
 }
 

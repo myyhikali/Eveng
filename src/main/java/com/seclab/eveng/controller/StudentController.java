@@ -2,7 +2,9 @@ package com.seclab.eveng.controller;
 
 import com.seclab.eveng.document.Student;
 import com.seclab.eveng.service.StudentService;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,7 +40,7 @@ public class StudentController {
         }
         return result;
     }
-    @GetMapping("register")
+    @GetMapping("/register")
     @ResponseBody
     public JSONObject register(@RequestParam Map<String,String> data){
         JSONObject result = new JSONObject();
@@ -72,4 +74,6 @@ public class StudentController {
         }
         return result;
     }
+
+
 }
