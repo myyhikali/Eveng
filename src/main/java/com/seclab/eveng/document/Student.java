@@ -6,6 +6,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
+import java.util.List;
 
 @Document(collection="Student")
 @Data
@@ -22,6 +23,5 @@ public class Student {
     private String authority;// 校内人员/校外人员
     //private Date lastTime; // 上一次登陆时间
     private Date registerDate;
-    private ObjectId classes;
-
+    private List<ObjectId> classes;
 }

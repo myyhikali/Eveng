@@ -12,6 +12,7 @@ import java.util.List;
 public class Teacher {
     @Id
     private ObjectId id;
+    private String teacherId;
     private String teacherName;
     private String password;
     //private String headPortrait;
