@@ -12,6 +12,6 @@ public class Port {
     private ObjectId id;
     private int startPort;
     private int endPort;
-    private ObjectId containerId;
+    private String containerId;
     private int mark;// 0为空，1为占用
 }

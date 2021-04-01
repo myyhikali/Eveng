@@ -37,32 +37,7 @@ public class ClassRoomController {
         this.studentService = studentService;
     }
 
-    @GetMapping("/getclassesbyteacherid")
-    @ResponseBody
-    public JSONArray getClassesByteacherId(@RequestParam String toid){
-        JSONArray result = new JSONArray();
-        try{
-            Teacher teacher = teacherService.getTeacherById(toid);
-            if(teacher == null){
-                throw new Exception();
-            }
 
-            List<ObjectId> classesId = teacher.getClasses();
-            List<ClassRoom> classRooms = classRoomService.getClassesByClassId(classesId);
-            for (ClassRoom classRoom : classRooms){
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("classId",classRoom.getId().toString());
-                jsonObject.put("className",classRoom.getClassName());
-                result.add(jsonObject);
-            }
-
-        }catch (Exception e){
-            JSONObject data = new JSONObject();
-            data.put("status",201);
-            result.add(data);
-        }
-        return result;
-    }
 
     @GetMapping("/getclassmassage")
     @ResponseBody

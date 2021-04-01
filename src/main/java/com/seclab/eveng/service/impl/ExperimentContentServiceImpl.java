@@ -1,7 +1,9 @@
 package com.seclab.eveng.service.impl;
 
+import com.seclab.eveng.document.ClassRoom;
 import com.seclab.eveng.document.ExperimentContent;
 import com.seclab.eveng.service.ExperimentContentService;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -41,7 +43,40 @@ public class ExperimentContentServiceImpl implements ExperimentContentService {
             return null;
         }
     }
-
+    public ExperimentContent getExperimentContentByExpcontentoid(ObjectId expcontentoid){
+        ExperimentContent experimentContent ;
+        try{
+            Query query = new Query();
+            query.addCriteria(Criteria.where("id").is(expcontentoid));
+            experimentContent = getMongoTemplate().findOne(query,ExperimentContent.class);
+        }catch (Exception e){
+            return null;
+        }
+        return experimentContent;
+    }
+    public List<ExperimentContent> getExperimentContentByCategory(String category){
+        List<ExperimentContent> result = new ArrayList<>();
+        try{
+            Query query = new Query();
+            query.addCriteria(Criteria.where("category").is(category));
+            result = getMongoTemplate().find(query,ExperimentContent.class);
+        }catch (Exception e){
+            return null;
+        }
+        return result;
+    }
+    public List<ExperimentContent> getExperimentContentByExpContentName(String expcontentname,String category){
+        List<ExperimentContent> experimentContents = null;
+        try{
+            Query query = new Query();
+            query.addCriteria(Criteria.where("experimentContentName").regex(".*"+expcontentname+".*"));
+            query.addCriteria(Criteria.where("category").is(category));
+            experimentContents = getMongoTemplate().find(query,ExperimentContent.class);
+        }catch (Exception e){
+            return null;
+        }
+        return experimentContents;
+    }
 
 
 }

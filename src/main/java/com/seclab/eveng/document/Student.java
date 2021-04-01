@@ -20,7 +20,7 @@ public class Student {
     private String password; // 用户密码
     private int score; // 用户得分
     private int state; // 用户状态：0禁止 | 1未实名 | 2正常
-    private String authority;// 校内人员/校外人员
+    private String authority;// 0校内人员/1校外人员
     //private Date lastTime; // 上一次登陆时间
     private Date registerDate;
     private List<ObjectId> classes;

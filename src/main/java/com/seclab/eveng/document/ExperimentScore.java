@@ -17,6 +17,6 @@ import java.util.Map;
 @Data
 public class ExperimentScore {
     private ObjectId id;
-    private List<ObjectId> teachersId;
+    private ObjectId ExperimentManageId;
     private Map<ObjectId,Double> score;
 }

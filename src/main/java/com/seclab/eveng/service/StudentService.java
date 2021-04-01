@@ -13,6 +13,8 @@ public interface StudentService {
     JSONObject login(Map<String,String> data);
     JSONObject register(Student student);
     List<Student> getStusByStuid(List<ObjectId> stuid);
+    Student getStuByStuOid(String stuOid);
     List<Student> getAllStu();
+    Boolean addStuToClass(String classOid,List<String> stusOid);
 }
 

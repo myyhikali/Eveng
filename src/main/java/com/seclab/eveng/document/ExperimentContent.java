@@ -15,8 +15,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class ExperimentContent {
     private ObjectId id ;
     private String experimentContentName;
-    private Object content;
+//    private Object content;
+    private String category;
     private int cpuTopLimit;
     private int memoryTopLimit;
     private int storageTopLimit;
+    private String url;
+    private ObjectId adminId;
 }

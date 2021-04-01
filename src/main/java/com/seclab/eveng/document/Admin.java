@@ -10,7 +10,7 @@ import java.util.Date;
 @Data
 public class Admin {
     @Id
-    private Long id; //automatic
+    private ObjectId id; //automatic
     private String username;
     private String password;
     private String telephone;

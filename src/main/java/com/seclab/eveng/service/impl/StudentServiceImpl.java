@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -46,36 +47,40 @@ public class StudentServiceImpl implements StudentService {
     public JSONObject login(Map<String,String> data){
         JSONObject result = new JSONObject() ;
         try{
-            if(data.get("telephone") == null && data.get("email") == null && data.get("studentNumber") == null){
+            if(data.get("password").equals("")){
                 result.put("state",201);
-                result.put("errMsg","ID can't be null");
-            }
-            if(data.get("password") == null){
-                result.put("state",201);
-                result.put("errMsg","password can't be null");
+                result.put("errMsg","密码不能为空");
+                throw new Exception();
             }
             Query query = new Query();
             Student student;
-            if(data.get("telephone") != null ){
+            if(!data.get("telephone").equals("") ){
                 query.addCriteria(Criteria.where("telephone").is(data.get("telephone")));
-            }else if(data.get("email") != null ){
-                query.addCriteria(Criteria.where("telephone").is(data.get("email")));
+            }else if(!data.get("email").equals("") ){
+                query.addCriteria(Criteria.where("email").is(data.get("email")));
+            }else if(!data.get("studentId").equals("")){
+                query.addCriteria(Criteria.where("studentId").is(data.get("studentId")));
             }else {
-                query.addCriteria(Criteria.where("telephone").is(data.get("studentNumber")));
+                result.put("errMsg","账号不能为空");
+                throw new Exception();
             }
+
             student = getMongoTemplate().findOne( query, Student.class );
             if(student == null){
                 result.put("state",201);
-                result.put("errMsg","user not exit");
+                result.put("errMsg","用户不存在");
+                throw new Exception();
             }
             if(student.getPassword().equals(data.get("password"))){
                 result.put("state",200);
-
+                result.put("soid",student.getId().toString());
             }else{
                 result.put("state",201);
-                result.put("errMsg","password error");
+                result.put("errMsg","密码错误");
+                throw new Exception();
             }
         }catch (Exception e){
+            result.put("state",201);
             System.out.println(e.getMessage());
         }
         return result;
@@ -83,20 +88,24 @@ public class StudentServiceImpl implements StudentService {
 
     public JSONObject register(Student student){
         JSONObject result = new JSONObject();
-        try{
+        try {
             Query query = new Query();
-            query.addCriteria(Criteria.where("studentId").is(student.getStudentId()));
-            if(getMongoTemplate().findOne(query, Student.class)!=null){
-                result.put("status","201");
-                result.put("errMsg","学号重复注册");
-                return result;
+            if (student.getStudentId() != null){
+                query.addCriteria(Criteria.where("studentId").is(student.getStudentId()));
+                if (getMongoTemplate().findOne(query, Student.class) != null) {
+                    result.put("status", "201");
+                    result.put("errMsg", "学号重复注册");
+                    return result;
+                }
             }
-            getMongoTemplate().insert(student);
+           // getMongoTemplate().insert(student);
+            Student stu = getMongoTemplate().insert(student);
+            result.put("soid",stu.getId().toString());
             result.put("status","200");
 
         }catch (Exception e){
             result.put("status","201");
-            result.put("errMsg","学生插入数据错误");
+            result.put("errMsg","学生注册错误");
         }
         return result;
 
@@ -116,6 +125,17 @@ public class StudentServiceImpl implements StudentService {
         }
         return list;
     }
+    public Student getStuByStuOid(String stuOid){
+        try{
+            Query query = new Query();
+            query.addCriteria(Criteria.where("id").is(new ObjectId(stuOid)));
+            Student student = getMongoTemplate().findOne(query,Student.class);
+            return student;
+        }catch (Exception e){
+            return null;
+        }
+    }
+
     public List<Student> getAllStu(){
         List<Student> list = new ArrayList<>();
         try{
@@ -126,6 +146,42 @@ public class StudentServiceImpl implements StudentService {
 
         }
         return list;
+    }
+    public Boolean addStuToClass(String classOid,List<String> stusOid){
+        try{
+            Query query = new Query();
+            query.addCriteria(Criteria.where("id").is(new ObjectId(classOid)));
+            ClassRoom classRoom = getMongoTemplate().findOne(query,ClassRoom.class);
+            for(String stuoid :stusOid){
+                Query qry = new Query();
+                qry.addCriteria(Criteria.where("id").is(new ObjectId(stuoid)));
+                Student student = getMongoTemplate().findOne(qry,Student.class);
+                if(student.getClasses()==null){
+                    List<ObjectId> list = new ArrayList<>();
+                    list.add(new ObjectId(classOid));
+                    student.setClasses(list);
+                }else
+                    student.getClasses().add(new ObjectId(classOid));
+
+                Update update = new Update();
+                update.set("classes",student.getClasses());
+                getMongoTemplate().upsert(qry , update,Student.class );
+
+                if(classRoom.getStudentsId()==null){
+                    List<ObjectId> list = new ArrayList<>();
+                    list.add(new ObjectId(stuoid));
+                    classRoom.setStudentsId(list);
+                }else
+                    classRoom.getStudentsId().add(new ObjectId(stuoid));
+            }
+            Update update = new Update();
+            update.set("studentsId",classRoom.getStudentsId());
+            getMongoTemplate().upsert(query , update,ClassRoom.class);
+
+            return true;
+        }catch (Exception e){
+            return false;
+        }
     }
 
 
